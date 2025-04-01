@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Crypto Trade Calculator</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; background-color: #f4f4f4; }
+        h1 { text-align: center; color: #333; }
+        .container { max-width: 800px; margin: 0 auto; background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); }
+        .tabs { display: flex; justify-content: center; margin-bottom: 20px; }
+        .tab-button { padding: 10px 20px; cursor: pointer; border: none; border-radius: 4px 4px 0 0; }
+        .tab-button.short { background-color: #d32f2f; color: white; }
+        .tab-button.long { background-color: #4caf50; color: white; }
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
+        .input-section, .output-section { margin-bottom: 20px; }
+        label { display: block; margin: 10px 0 5px; }
+        input[type="number"], select { width: 100%; padding: 8px; margin-bottom: 10px; border: 1px solid #ccc; border-radius: 4px; }
+        .radio-group { margin-bottom: 10px; }
+        button { display: block; width: 100%; padding: 10px; background-color: #d32f2f; color: white; border: none; border-radius: 4px; cursor: pointer; }
+        button:hover { background-color: #b71c1c; }
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        th, td { padding: 10px; border: 1px solid #ddd; text-align: left; }
+        th { background-color: #d32f2f; color: white; }
+        tr:nth-child(even) { background-color: #f9f9f9; }
+        .highlight { background-color: #ffeb3b; font-weight: bold; }
+        .profit { background-color: #81c784; font-weight: bold; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Crypto Trade Calculator</h1>
+
+        <!-- Tab Buttons -->
+        <div class="tabs">
+            <button class="tab-button short active" onclick="showTab('short')">Short</button>
+            <button class="tab-button long" onclick="showTab('long')">Long</button>
+        </div>
+
+        <!-- Short Tab Content -->
+        <div id="short" class="tab-content active">
+            <h2>Short Trade</h2>
+            <div class="input-section">
+                <label for="cryptoPairShort">Cryptocurrency Pair:</label>
+                <select id="cryptoPairShort">
+                    <option value="BTCUSD">BTCUSD</option>
+                    <option value="ETHUSD" selected>ETHUSD</option>
+                    <option value="SOLUSD">SOLUSD</option>
+                    <option value="SRPUSD">SRPUSD</option>
+                </select>
+
+                <label for="entryPriceShort">Entry Price (USD):</label>
+                <input type="number" id="entryPriceShort" value="1816" step="0.01">
+
+                <label for="exitPriceShort">Exit/Target Price (USD):</label>
+                <input type="number" id="exitPriceShort" value="1760" step="0.01">
+
+                <label for="investmentShort">Investment (INR):</label>
+                <input type="number" id="investmentShort" value="15000" step="1">
+
+                <label for="leverageShort">Leverage (x):</label>
+                <select id="leverageShort">
+                    <option value="1">1x</option>
+                    <option value="2">2x</option>
+                    <option value="5">5x</option>
+                    <option value="10">10x</option>
+                    <option value="25">25x</option>
+                    <option value="50" selected>50x</option>
+                    <option value="100">100x</option>
+                    <option value="200">200x</option>
+                </select>
+
+                <label for="exchangeRateShort">USD/INR Exchange Rate:</label>
+                <input type="number" id="exchangeRateShort" value="85.56" step="0.01">
+
+                <label for="stopLossPercentShort">Stop-Loss Percentage (% of Investment):</label>
+                <input type="number" id="stopLossPercentShort" value="10" step="0.01">
+
+                <label>Delta Exchange Fee (%):</label>
+                <div class="radio-group">
+                    <input type="radio" id="takerFeeShort" name="feeRateShort" value="0.05" checked>
+                    <label for="takerFeeShort" style="display: inline;">Taker Fee (0.05%)</label><br>
+                    <input type="radio" id="makerFeeShort" name="feeRateShort" value="0.02">
+                    <label for="makerFeeShort" style="display: inline;">Maker Fee (0.02%)</label>
+                </div>
+
+                <button onclick="calculateTrade('short')">Calculate</button>
+            </div>
+            <div class="output-section">
+                <table id="resultsTableShort">
+                    <thead>
+                        <tr>
+                            <th>Parameter</th>
+                            <th>Value</th>
+                            <th>Calculation/Result</th>
+                            <th>INR</th>
+                        </tr>
+                    </thead>
+                    <tbody id="resultsBodyShort"></tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Long Tab Content -->
+        <div id="long" class="tab-content">
+            <h2>Long Trade</h2>
+            <div class="input-section">
+                <label for="cryptoPairLong">Cryptocurrency Pair:</label>
+                <select id="cryptoPairLong">
+                    <option value="BTCUSD">BTCUSD</option>
+                    <option value="ETHUSD" selected>ETHUSD</option>
+                    <option value="SOLUSD">SOLUSD</option>
+                    <option value="SRPUSD">SRPUSD</option>
+                </select>
+
+                <label for="entryPriceLong">Entry Price (USD):</label>
+                <input type="number" id="entryPriceLong" value="1816" step="0.01">
+
+                <label for="exitPriceLong">Exit/Target Price (USD):</label>
+                <input type="number" id="exitPriceLong" value="1880" step="0.01">
+
+                <label for="investmentLong">Investment (INR):</label>
+                <input type="number" id="investmentLong" value="15000" step="1">
+
+                <label for="leverageLong">Leverage (x):</label>
+                <select id="leverageLong">
+                    <option value="1">1x</option>
+                    <option value="2">2x</option>
+                    <option value="5">5x</option>
+                    <option value="10">10x</option>
+                    <option value="25">25x</option>
+                    <option value="50" selected>50x</option>
+                    <option value="100">100x</option>
+                    <option value="200">200x</option>
+                </select>
+
+                <label for="exchangeRateLong">USD/INR Exchange Rate:</label>
+                <input type="number" id="exchangeRateLong" value="85.56" step="0.01">
+
+                <label for="stopLossPercentLong">Stop-Loss Percentage (% of Investment):</label>
+                <input type="number" id="stopLossPercentLong" value="10" step="0.01">
+
+                <label>Delta Exchange Fee (%):</label>
+                <div class="radio-group">
+                    <input type="radio" id="takerFeeLong" name="feeRateLong" value="0.05" checked>
+                    <label for="takerFeeLong" style="display: inline;">Taker Fee (0.05%)</label><br>
+                    <input type="radio" id="makerFeeLong" name="feeRateLong" value="0.02">
+                    <label for="makerFeeLong" style="display: inline;">Maker Fee (0.02%)</label>
+                </div>
+
+                <button onclick="calculateTrade('long')">Calculate</button>
+            </div>
+            <div class="output-section">
+                <table id="resultsTableLong">
+                    <thead>
+                        <tr>
+                            <th>Parameter</th>
+                            <th>Value</th>
+                            <th>Calculation/Result</th>
+                            <th>INR</th>
+                        </tr>
+                    </thead>
+                    <tbody id="resultsBodyLong"></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Function to switch tabs
+        function showTab(tradeType) {
+            document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+            document.querySelectorAll('.tab-button').forEach(button => button.classList.remove('active'));
+            document.getElementById(tradeType).classList.add('active');
+            document.querySelector(`.tab-button[onclick="showTab('${tradeType}')"]`).classList.add('active');
+        }
+
+        // Function to calculate trade (for both Short and Long)
+        function calculateTrade(tradeType) {
+            const suffix = tradeType === 'short' ? 'Short' : 'Long';
+            const cryptoPair = document.getElementById(`cryptoPair${suffix}`).value;
+            const entryPrice = parseFloat(document.getElementById(`entryPrice${suffix}`).value);
+            const exitPrice = parseFloat(document.getElementById(`exitPrice${suffix}`).value);
+            const investment = parseFloat(document.getElementById(`investment${suffix}`).value);
+            const leverage = parseFloat(document.getElementById(`leverage${suffix}`).value);
+            const exchangeRate = parseFloat(document.getElementById(`exchangeRate${suffix}`).value);
+            const stopLossPercent = parseFloat(document.getElementById(`stopLossPercent${suffix}`).value);
+            const feeRate = parseFloat(document.querySelector(`input[name="feeRate${suffix}"]:checked`).value) / 100;
+
+            // Common calculations
+            const investmentUSD = investment / exchangeRate;
+            const nationalMargin = investmentUSD * leverage;
+            const quantity = nationalMargin / entryPrice;
+            const maxLossUSD = (stopLossPercent / 100) * investmentUSD;
+
+            let priceDifference, profit, stopLossPrice, liquidationPrice;
+
+            // Trade-specific calculations
+            if (tradeType === 'short') {
+                priceDifference = entryPrice - exitPrice;
+                profit = quantity * priceDifference;
+                stopLossPrice = entryPrice + (maxLossUSD / quantity);
+                liquidationPrice = entryPrice * (1 + 1 / leverage);
+            } else { // Long
+                priceDifference = exitPrice - entryPrice;
+                profit = quantity * priceDifference;
+                stopLossPrice = entryPrice - (maxLossUSD / quantity);
+                liquidationPrice = entryPrice * (1 - 1 / leverage);
+            }
+
+            // Fee and final calculations
+            const entryNotional = quantity * entryPrice;
+            const exitNotional = quantity * exitPrice;
+            const totalFee = (entryNotional * feeRate + exitNotional * feeRate).toFixed(2);
+            const netProfit = (profit - totalFee).toFixed(2);
+            const netReturn = ((netProfit * exchangeRate / investment) * 100).toFixed(2);
+            const lot = Math.round(nationalMargin / entryPrice / 0.01);
+
+            // Display results
+            const resultsBody = document.getElementById(`resultsBody${suffix}`);
+            resultsBody.innerHTML = `
+                <tr><td>Cryptocurrency Pair</td><td>${cryptoPair}</td><td></td><td></td></tr>
+                <tr><td>Entry Price</td><td>$${entryPrice}</td><td></td><td></td></tr>
+                <tr><td>Exit/Target Price</td><td>$${exitPrice}</td><td></td><td></td></tr>
+                <tr class="highlight"><td>Price Difference</td><td>$${priceDifference.toFixed(2)}</td><td>$${tradeType === 'short' ? entryPrice + ' - ' + exitPrice : exitPrice + ' - ' + entryPrice}</td><td>₹${(priceDifference * exchangeRate).toFixed(2)}</td></tr>
+                <tr><td>Investment</td><td>$${investmentUSD.toFixed(2)}</td><td></td><td>₹${investment.toFixed(2)}</td></tr>
+                <tr><td>Leverage</td><td>${leverage}x</td><td></td><td></td></tr>
+                <tr class="highlight"><td>National Margin</td><td>$${nationalMargin.toFixed(2)}</td><td>$${investmentUSD.toFixed(2)} x ${leverage}</td><td>₹${(nationalMargin * exchangeRate).toFixed(2)}</td></tr>
+                <tr><td>USD/INR Rate</td><td>₹${exchangeRate}</td><td></td><td></td></tr>
+                <tr><td>Delta Exchange Fee (%)</td><td>${(feeRate * 100).toFixed(2)}%</td><td></td><td></td></tr>
+                <tr class="highlight"><td>Lot</td><td>${lot}</td><td>Math.round(${(nationalMargin / entryPrice / 0.01).toFixed(2)})</td><td></td></tr>
+                <tr><td>Quantity</td><td>${quantity.toFixed(4)} ${cryptoPair.slice(0, 3)}</td><td>$${nationalMargin.toFixed(2)} / $${entryPrice}</td><td></td></tr>
+                <tr class="profit"><td>Profit</td><td>$${profit.toFixed(2)}</td><td>${quantity.toFixed(4)} * $${priceDifference.toFixed(2)}</td><td>₹${(profit * exchangeRate).toFixed(2)}</td></tr>
+                <tr><td>Entry & Exit Fee</td><td>$${totalFee}</td><td>($${entryNotional.toFixed(2)} + $${exitNotional.toFixed(2)}) * ${(feeRate * 100).toFixed(2)}%</td><td>₹${(totalFee * exchangeRate).toFixed(2)}</td></tr>
+                <tr class="profit"><td>Net Profit</td><td>$${netProfit}</td><td>$${profit.toFixed(2)} - $${totalFee}</td><td>₹${(netProfit * exchangeRate).toFixed(2)}</td></tr>
+                <tr class="highlight"><td>Net Return (%)</td><td>${netReturn}%</td><td>(₹${(netProfit * exchangeRate).toFixed(2)} / ₹${investment.toFixed(2)}) * 100</td><td>${netReturn}%</td></tr>
+                <tr><td>Liquidation Price</td><td>$${liquidationPrice.toFixed(2)}</td><td>$${entryPrice} * (1 ${tradeType === 'short' ? '+' : '-'} 1 / ${leverage})</td><td></td></tr>
+                <tr><td>Stop-Loss Percentage</td><td>${stopLossPercent}%</td><td></td><td></td></tr>
+                <tr><td>Stop-Loss Price</td><td>$${stopLossPrice.toFixed(2)}</td><td>$${entryPrice} ${tradeType === 'short' ? '+' : '-'} ($${maxLossUSD.toFixed(2)} / ${quantity.toFixed(4)})</td><td></td></tr>
+            `;
+        }
+    </script>
+</body>
+</html>
